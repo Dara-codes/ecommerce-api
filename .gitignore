@@ -11,7 +11,7 @@ venv/
 *.pyc
 *.py[cod]
 __pycache__/
-db.sqlite3
+# db.sqlite3
 media
 
 # VS Code
