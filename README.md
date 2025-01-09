@@ -1,52 +1,154 @@
-# E-commerce Product API
+# E-commerce Platform API
 
-## Project Overview
+## Overview
 
-This project is an E-commerce Product API built using Django and Django REST Framework (DRF). The API supports product management, user authentication, and search functionality for an e-commerce platform.
+This project is an e-commerce platform developed using Django for the backend. The project includes a custom user model, product and category management, and features like searching, filtering, and pagination.
 
-## Features
+## Key Features
 
-- **Product Management (CRUD):**
-  - Create, Read, Update, and Delete products.
-  - Attributes: Name, Description, Price, Category, Stock Quantity, Image URL, Created Date.
-- **User Management:**
-  - Register, Login, Logout endpoints.
-  - Token-based authentication using Django REST Framework's JWT.
-- **Product Search and Filters:**
-  - Search products by Name or Category.
-  - Filter products by Category, Price Range, and Stock Availability.
-  - Pagination for search results.
-- **Error Handling:**
-  - Proper HTTP status codes for errors (e.g., 404, 400).
+- **Custom User Model**: A user model based on `AbstractUser` with an email field that is unique.
+- **Product Management**: Create, retrieve, update, and delete products.
+- **Category Management**: Organize products into categories.
+- **Authentication**: JWT-based authentication for secure user management.
+- **Searching, Filtering, and Pagination**: Advanced options to query products by name, category, stock, and price range.
+- **All Products View**: A public endpoint to view products with pagination.
 
-## Installation
+## Current Focus
 
-### Prerequisites
+### What Has Been Implemented
 
-- Python 3.8+
-- Django 4.0+
-- Django REST Framework
+1. **Custom User Model**:
+
+   - A `CustomUser` model extending `AbstractUser` with unique email.
+   - Fully integrated into the project as the user model.
+
+2. **Product and Category Models**:
+
+   - Models for managing products and categories with appropriate fields and relationships.
+
+3. **Product ViewSet**:
+
+   - Provides CRUD operations for products.
+   - Includes filtering by category, stock, and price range.
+   - Includes search functionality for product names and categories.
+   - Pagination to limit the number of products per page.
+
+4. **Authentication**:
+
+   - JWT-based authentication using `djangorestframework-simplejwt`.
+   - Access and refresh tokens are implemented and tested.
+
+5. **Public Product View**:
+
+   - A separate viewset to list all products for unauthenticated users.
+
+### Current Work
+
+- Debugging errors related to token authentication and 500/401 responses when creating products.
+- Ensuring the `CustomUser` model is consistently used across the project to avoid conflicts with the built-in `User` model.
+- Updating the `README` to align with project progress and maintain accuracy.
 
 ## API Endpoints
 
-### Authentication
+### Authentication Endpoints
 
-- **Register**: `POST /api/register/`
-- **Login**: `POST /api/token/` (returns access and refresh tokens)
-- **Refresh Token**: `POST /api/token/refresh/`
-- **Logout**: Custom endpoint (if implemented)
+1. **Register**: `POST /api/register/`
+2. **Login**: `POST /api/token/`
+3. **Token Refresh**: `POST /api/token/refresh/`
 
-### Products
+### Product Endpoints
 
-- **List Products**: `GET /api/products/`
-- **Create Product**: `POST /api/products/`
-- **Retrieve Product**: `GET /api/products/<id>/`
-- **Update Product**: `PUT /api/products/<id>/`
-- **Delete Product**: `DELETE /api/products/<id>/`
+1. **Create Product**: `POST /api/products/` (Authenticated)
+2. **List Products**: `GET /api/products/`
+3. **Search Products**: `GET /api/products/?search=<query>`
+4. **Filter Products**: `GET /api/products/?min_price=<value>&max_price=<value>`
+5. **Pagination**: `GET /api/products/?page=<number>`
+6. **Public Product View**: `GET /api/allproducts/` (Unauthenticated)
 
-### Search and Filter
+### Category Endpoints
 
-- **Search by Name/Category**: `GET /api/products/?search=<query>`
-- **Filter by Category/Price/Stock**: `GET /api/products/?category=<category>&min_price=<min>&max_price=<max>&in_stock=True`
+1. **List Categories**: `GET /api/categories/`
+2. **Create Category**: `POST /api/categories/` (Authenticated)
 
-## Deployment
+## How to Set Up and Run the Project
+
+### Prerequisites
+
+- Python 3.10+
+- Django 4.x
+- Postman or any API testing tool
+- Virtual environment (optional but recommended)
+
+### Authentication Testing
+
+1. **Register**:
+
+   - Endpoint: `POST /api/register/`
+   - Body:
+     ```json
+     {
+       "username": "testuser",
+       "email": "testuser@example.com",
+       "password": "password123"
+     }
+     ```
+
+2. **Login**:
+
+   - Endpoint: `POST /api/token/`
+   - Body:
+     ```json
+     {
+       "username": "testuser",
+       "password": "password123"
+     }
+     ```
+   - Response includes `access` and `refresh` tokens.
+
+3. **Use Access Token**:
+
+   - Include the token in headers for authenticated endpoints:
+     ```
+     Authorization: Bearer <access_token>
+     ```
+
+### Product Management Testing
+
+1. **Create Product**:
+
+   - Endpoint: `POST /api/products/`
+   - Requires authentication.
+   - Body:
+     ```json
+     {
+       "name": "Example Product",
+       "description": "A sample product description.",
+       "price": 19.99,
+       "category": 1,
+       "stock_quantity": 100,
+       "image_url": "http://example.com/image.jpg"
+     }
+     ```
+
+2. **List Products**:
+
+   - Endpoint: `GET /api/products/`
+
+3. **Search and Filter**:
+
+   - Search by name or category:
+     ```
+     /api/products/?search=example
+     ```
+   - Filter by price range:
+     ```
+     /api/products/?min_price=10&max_price=50
+     ```
+
+4. **Pagination**:
+
+   - Default page size is 10.
+   - Query with:
+     ```
+     /api/products/?page=2
+     ```
