@@ -45,7 +45,23 @@ class AllproductListViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['name', 'category']
+    filterset_fields = ['category', 'stock_quantity']
     pagination_class = ProductPagination
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        # queryset = Product.objects.filter(user=self.request.user)
+
+        # Filter by price range
+        min_price = self.request.query_params.get('min_price')
+        max_price = self.request.query_params.get('max_price')
+        if min_price and max_price:
+            queryset = queryset.filter(price__gte=min_price, price__lte=max_price)
+
+        return queryset
+
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
